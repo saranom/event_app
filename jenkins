@@ -1,13 +1,19 @@
-/* groovylint-disable CompileStatic, DuplicateStringLiteral, NestedBlockDepth */
 pipeline {
     environment {
-        registry = 'asia.gcr.io/map-ceremony-0306/node_helloworld'
+        registry = 'asia.gcr.io/map-ceremony-0306/event_app'
         registryCredential = 'gcr:map-ceremony-0306'
         dockerImage = ''
     }
     agent any
 
     stages {
+        stage('clone from git') {
+            steps {
+                script {
+                    git credentialsId: 'b28845ae-d389-47f3-ba92-0fad092033af', url: 'https://github.com/saranom/event_app.git'
+                }
+            }
+        }
         stage('Building our image') {
             steps {
                 script {
@@ -15,7 +21,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy our image') {
+    stage('Deploy our image') {
             steps {
                 script {
                     docker.withRegistry('https://asia.gcr.io/map-ceremony-0306', 'gcr:map-ceremony-0306') {
@@ -32,4 +38,3 @@ pipeline {
         }
     }
 }
-
